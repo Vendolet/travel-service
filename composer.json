@@ -3,5 +3,11 @@
         "slim/slim": "4.*",
         "slim/psr7": "^1.6",
         "krugozor/database": "^2.0"
+    },
+    "autoload": {
+      "psr-4": {
+        "app\\": "app/",
+        "database\\": "database/"
+      }
     }
 }
