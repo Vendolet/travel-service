@@ -3,6 +3,7 @@
 namespace app\controller;
 
 use app\model\Traveler;
+use app\validator\Validator;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Routing\RouteContext;
@@ -48,26 +49,34 @@ class TravelerController extends Controller
     /**
      * Регистрация нового пользователя (путешественника)
      * @return ResponseInterface JSON ответ со списком ошибок в случае неудачи
-     *                              или JSON ответ с новым пользователем
+     * или JSON ответ с новым пользователем
      */
     public function signup(Request $request, Response $response): Response
     {
         $model = new Traveler($this->conn);
+
         $inputJSON = $request->getBody();
         $data = json_decode($inputJSON, true);
+        $validator = new Validator($data, $model->getRequiredFieldsCreate());
 
-        $errors = []; //TODO валидация данных
+        $errors = [];
+
+        if (!$validator->validate()){
+            $errors = $validator->getErrors();
+        }
 
         if (empty($errors)){
+            $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT );
+
             if (!$model->isExistTraveler($data['phone']))
             {
-                $outputData = $model->create($data);
-                $outputJSON = json_encode($outputData);
+                $newUser = $model->create($data);
+
+                $_SESSION['user'] = $newUser;
+
+                $outputJSON = json_encode($newUser);
 
                 $response->getBody()->write($outputJSON);
-
-                //TODO старт сессии
-
                 return $response->withHeader('Content-Type', 'application/json');
             }else{
                  $errors['travelerIsExist'] = true;
@@ -78,6 +87,5 @@ class TravelerController extends Controller
 
         $response->getBody()->write($outputJSON);
         return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
-
     }
 }

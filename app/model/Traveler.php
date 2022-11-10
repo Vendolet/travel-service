@@ -5,6 +5,22 @@ namespace app\model;
 class Traveler extends Model
 {
     /**
+     * Возвращает обязательные поля для создания записи
+     * @return array наименование столбцов таблицы
+     */
+    public function getRequiredFieldsCreate()
+    {
+        return ['name_traveler', 'phone', 'password'];
+    }
+    /**
+     * Возвращает обязательные поля для авторизации
+     * @return array наименование столбцов таблицы
+     */
+    public function getRequiredFieldsLogin()
+    {
+        return ['phone', 'password'];
+    }
+    /**
      * Получение всех записей
      * @return array найденные записи
      */
@@ -33,8 +49,7 @@ class Traveler extends Model
      */
     public function create($data)
     {
-        $trueData = array_combine(['name_traveler', 'phone', 'password'], $data);
-        $this->db->query('INSERT INTO `traveler` SET ?A["?s", "?s", "?s"];', $trueData);
+        $this->db->query('INSERT INTO `traveler` SET ?A["?s", "?s", "?s"];', $data);
         $result = $this->db->query('SELECT `id`, `name_traveler` FROM `traveler` WHERE `id` =  LAST_INSERT_ID()');
         //TODO объединить запрос
         return $result->fetchAssoc();

@@ -6,6 +6,8 @@ use Slim\Factory\AppFactory;
 
 require BASE_DIR . '/vendor/autoload.php';
 
+session_start();
+
 $app = AppFactory::create();
 
 $app->get('/', PlaceController::class . ':findAll'); // получить все достопримечательности
