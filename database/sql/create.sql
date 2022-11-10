@@ -3,6 +3,8 @@ USE travel_service;
 CREATE TABLE IF NOT EXISTS `traveler` (
     `id` int NOT NULL AUTO_INCREMENT,
     `name_traveler` VARCHAR(255) NOT NULL,
+    `phone` VARCHAR(11) NOT NULL UNIQUE,
+    `password` VARCHAR(255) NOT NULL,
     PRIMARY KEY (`id`)
 );
 

@@ -30,11 +30,11 @@ INSERT INTO `place` (`name_place`, `distance`, `city_id`) VALUES
 ('Berlin Square', 5.7, 4),
 ('Berlin Theatre', 16.2, 4),
 
-INSERT INTO `traveler` (`name_traveler`) VALUES
-('Maks'),
-('Peter'),
-('Sergei'),
-('Alex'),
-('Mike'),
-('August');
+INSERT INTO `traveler` (`name_traveler`, `phone`, `password`) VALUES
+('Maks', '89991111111', 'Maks'),
+('Peter', '89992222222', 'Maks'),
+('Sergei', '89993333333', 'Maks'),
+('Alex', '89994444444', 'Maks'),
+('Mike', '89995555555', 'Maks'),
+('August', '89996666666', 'Maks');
 
