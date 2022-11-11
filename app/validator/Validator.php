@@ -61,7 +61,7 @@ class Validator
 
     private function validateTravelerName(): null|string
     {
-        if (preg_match('/^[A-Za-zА-Яа-я]/iu', $this->inputData['name_traveler']))
+        if (preg_match('/^[A-Za-zА-Яа-я]+$/iu', $this->inputData['name_traveler']))
         {
             return $this->checkStringLength($this->inputData['name_traveler'], 2, 15) ? null : 'Diapason between 2 and 15 symbols';
         }

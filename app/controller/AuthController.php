@@ -3,6 +3,7 @@
 namespace app\controller;
 
 use app\model\Traveler;
+use app\tools\Tools;
 use app\validator\Validator;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -19,12 +20,11 @@ class AuthController extends Controller
             return $response->withStatus(403);
             //TODO вынести проверку прав в другой обработчик
         }
+        $errors = [];
 
         $model = new Traveler($this->conn);
-        $inputJSON = $request->getBody();
-        $data = json_decode($inputJSON, true);
 
-        $errors = [];
+        $data = Tools::getRequestContentBody($request);
 
         $validator = new Validator($data, $model->getRequiredFieldsLogin());
 
@@ -39,17 +39,13 @@ class AuthController extends Controller
                 if ($model->isVerifyPassword($user['phone'], $data['password'])){
                     $_SESSION['user'] = $user;
 
-                    $outputJSON = json_encode($user);
-                    $response->getBody()->write($outputJSON);
-                    return $response->withHeader('Content-Type', 'application/json');
+                    return Tools::getResponseJSON($response, $user);
 
                 }else{ $errors['password'] = 'Wrong password'; }
             }else{ $errors['phone'] = 'This user is not exist'; }
         }
 
-        $outputJSON = json_encode($errors);
-        $response->getBody()->write($outputJSON);
-        return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
+        return Tools::getResponseJSON($response, $errors)->withStatus(400);
     }
 
     /**

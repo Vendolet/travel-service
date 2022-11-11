@@ -3,6 +3,7 @@
 namespace app\controller;
 
 use app\model\Traveler;
+use app\tools\Tools;
 use app\validator\Validator;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -19,10 +20,7 @@ class TravelerController extends Controller
         $model = new Traveler($this->conn);
         $data = $model->getAll();
 
-        $dataJson = json_encode($data);
-
-        $response->getBody()->write($dataJson);
-        return $response->withHeader('Content-Type', 'application/json');
+        return Tools::getResponseJSON($response, $data);
     }
 
     /**
@@ -32,18 +30,14 @@ class TravelerController extends Controller
     public function findOne(Request $request, Response $response): Response
     {
         $model = new Traveler($this->conn);
-        $route = RouteContext::fromRequest($request)->getRoute();
 
+        $route = RouteContext::fromRequest($request)->getRoute();
         $modelID = $route->getArgument('id');
         //TODO валидация данных
 
         $data = $model->getByID($modelID);
-        $dataJson = json_encode($data);
-
         //TODO список посещенных городов и оценок достопримечательностей
-
-        $response->getBody()->write($dataJson);
-        return $response->withHeader('Content-Type', 'application/json');
+        return Tools::getResponseJSON($response, $data);
     }
 
     /**
@@ -57,14 +51,12 @@ class TravelerController extends Controller
             return $response->withStatus(403);
             //TODO вынести проверку прав в другой обработчик
         }
+        $errors = [];
 
         $model = new Traveler($this->conn);
+        $data = Tools::getRequestContentBody($request);
 
-        $inputJSON = $request->getBody();
-        $data = json_decode($inputJSON, true);
         $validator = new Validator($data, $model->getRequiredFieldsCreate());
-
-        $errors = [];
 
         if (!$validator->validate()){
             $errors = $validator->getErrors();
@@ -76,21 +68,14 @@ class TravelerController extends Controller
             if (!$model->getTravelerByPhone($data['phone']))
             {
                 $newUser = $model->create($data);
-
                 $_SESSION['user'] = $newUser;
 
-                $outputJSON = json_encode($newUser);
-
-                $response->getBody()->write($outputJSON);
-                return $response->withHeader('Content-Type', 'application/json');
+                return Tools::getResponseJSON($response, $newUser);
             }else{
                  $errors['travelerIsExist'] = true;
             }
         }
 
-        $outputJSON = json_encode($errors);
-
-        $response->getBody()->write($outputJSON);
-        return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
+        return Tools::getResponseJSON($response, $errors)->withStatus(400);
     }
 }
