@@ -56,14 +56,25 @@ class Traveler extends Model
     }
 
     /**
-     * Проверить существование записи
+     * Возвращает данные пользователя по номеру телефона
      * @param string $phone телефон пользователя
-     * @return int|bool true, если найдено
+     * @return array|null возвращает массив данных путешественника или Null, если не найден
      */
-    public function isExistTraveler($phone): bool
+    public function getTravelerByPhone($phone): array|null
     {
-        $result = $this->db->query('SELECT EXISTS (SELECT * FROM traveler WHERE `phone` = "?s")', $phone);
+        $result = $this->db->query('SELECT `id`, `name_traveler`, `phone` FROM traveler WHERE `phone` = "?s"', $phone);
+        return $result->fetchAssoc();
+    }
 
-        return $result->getOne();
+    /**
+     * Проверяет правильность переданного пароля
+     * @param string $phone телефон пользователя
+     * @return bool возвращает true, если пароль верный. Иначе - false
+     */
+    public function isVerifyPassword($phone, $password): bool
+    {
+        $result = $this->db->query('SELECT `password` FROM traveler WHERE `phone` = "?s"', $phone);
+        $passwordHash = $result->getOne();
+        return password_verify($password, $passwordHash);
     }
 }

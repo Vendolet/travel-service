@@ -6,11 +6,15 @@ class Validator
 {
     private $errors = [];
 
+    /**
+     * Принимает именованный массив данных на валидацию и имена обязательных полей.
+     */
     public function __construct(public array $inputData,
                                 public array $requiredFields){}
 
     /**
-     * Получение массива ошибок
+     * Получение массива ошибок после валидации
+     * @return array массив ошибок после валидации
      */
     public function getErrors(): array
     {
@@ -34,6 +38,7 @@ class Validator
 
     /**
      * Проверка поля
+     * @return null|string возвращает null при отсутствии ошибок либо строку с описанием ошибки
      */
 
     private function checkField($field): null|string

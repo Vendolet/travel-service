@@ -53,6 +53,11 @@ class TravelerController extends Controller
      */
     public function signup(Request $request, Response $response): Response
     {
+        if ($this->isAuth){
+            return $response->withStatus(403);
+            //TODO вынести проверку прав в другой обработчик
+        }
+
         $model = new Traveler($this->conn);
 
         $inputJSON = $request->getBody();
@@ -68,7 +73,7 @@ class TravelerController extends Controller
         if (empty($errors)){
             $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT );
 
-            if (!$model->isExistTraveler($data['phone']))
+            if (!$model->getTravelerByPhone($data['phone']))
             {
                 $newUser = $model->create($data);
 
