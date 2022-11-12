@@ -21,30 +21,27 @@ class Traveler extends Model
         return ['phone', 'password'];
     }
     /**
-     * Получение всех записей
+     * Получение всех записей (без телефонов)
      * @return array|null найденные записи
      */
     public function getAll(): array|null
     {
-       $result = $this->db->query('SELECT `id`, `name_traveler`, `phone` FROM traveler');
-       $data = $result->fetchAssocArray();
-
-       return $data;
+       $result = $this->db->query('SELECT `id`, `name_traveler` FROM traveler');
+       return $result->fetchAssocArray();
     }
     /**
-     * Получить запись по ID
+     * Получить запись по ID (без телефона)
      * @param int $id ID путешественника
      * @return array найденная запись
      */
     public function getByID(int $id): array|null
     {
         $result = $this->db->query("SELECT `id`, `name_traveler` FROM traveler WHERE `id` =  ?i", $id);
-
         return $result->fetchAssoc();
     }
 
     /**
-     * Возвращает данные пользователя по номеру телефона
+     * Возвращает данные пользователя по номеру телефона (в том числе телефон)
      * @param string $phone телефон пользователя
      * @return array|null возвращает массив данных путешественника или Null, если не найден
      */
@@ -62,7 +59,7 @@ class Traveler extends Model
     public function create(array $data)
     {
         $this->db->query('INSERT INTO `traveler` SET ?A["?s", "?s", "?s"];', $data);
-        $result = $this->db->query('SELECT `id`, `name_traveler` FROM `traveler` WHERE `id` =  LAST_INSERT_ID()');
+        $result = $this->db->query('SELECT `id`, `name_traveler`, `phone` FROM `traveler` WHERE `id` =  LAST_INSERT_ID()');
         //TODO объединить запрос
         return $result->fetchAssoc();
     }

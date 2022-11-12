@@ -20,12 +20,10 @@ class AuthController extends Controller
             return $response->withStatus(403);
             //TODO вынести проверку прав в другой обработчик
         }
+
         $errors = [];
-
         $model = new Traveler($this->conn);
-
         $data = Tools::getRequestContentBody($request);
-
         $validator = new Validator($data, $model->getRequiredFieldsLogin());
 
         if (!$validator->validate()){
@@ -40,9 +38,50 @@ class AuthController extends Controller
                     $_SESSION['user'] = $user;
 
                     return Tools::getResponseJSON($response, $user);
+                }else{
+                    $errors['password'] = 'Wrong password';
+                }
+            }else{
+                $errors['phone'] = 'This user is not exist';
+            }
+        }
 
-                }else{ $errors['password'] = 'Wrong password'; }
-            }else{ $errors['phone'] = 'This user is not exist'; }
+        return Tools::getResponseJSON($response, $errors)->withStatus(400);
+    }
+
+    /**
+     * Регистрация нового пользователя (путешественника)
+     * @return ResponseInterface JSON ответ со списком ошибок в случае неудачи
+     * или JSON ответ с новым пользователем
+     */
+    public function signup(Request $request, Response $response): Response
+    {
+        if ($this->isAuth){
+            return $response->withStatus(403);
+            //TODO вынести проверку прав в другой обработчик
+        }
+
+        $errors = [];
+        $model = new Traveler($this->conn);
+        $data = Tools::getRequestContentBody($request);
+        $validator = new Validator($data, $model->getRequiredFieldsCreate());
+
+        if (!$validator->validate()){
+            $errors = $validator->getErrors();
+        }
+
+        if (empty($errors)){
+            $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT );
+
+            if (!$model->getTravelerByPhone($data['phone']))
+            {
+                $newUser = $model->create($data);
+                $_SESSION['user'] = $newUser;
+
+                return Tools::getResponseJSON($response, $newUser);
+            }else{
+                 $errors['travelerIsExist'] = true;
+            }
         }
 
         return Tools::getResponseJSON($response, $errors)->withStatus(400);
