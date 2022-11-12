@@ -4,7 +4,7 @@ namespace app\controller;
 
 use app\model\Traveler;
 use app\tools\Tools;
-use app\validator\Validator;
+use Valitron\Validator;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -24,19 +24,21 @@ class AuthController extends Controller
         $errors = [];
         $model = new Traveler($this->conn);
         $data = Tools::getRequestContentBody($request);
-        $validator = new Validator($data, $model->getRequiredFieldsLogin());
+        $validator = new Validator($data);
+
+        $model->getRulesLogin($validator);
 
         if (!$validator->validate()){
-            $errors = $validator->getErrors();
+            $errors = $validator->errors();
         }
 
         if (empty($errors)){
             $user = $model->getTravelerByPhone($data['phone']);
 
             if ($user){
-                if ($model->isVerifyPassword($user['phone'], $data['password'])){
+                if ($model->isVerifyPassword($user['phone'], $data['password']))
+                {
                     $_SESSION['user'] = $user;
-
                     return Tools::getResponseJSON($response, $user);
                 }else{
                     $errors['password'] = 'Wrong password';
@@ -64,10 +66,12 @@ class AuthController extends Controller
         $errors = [];
         $model = new Traveler($this->conn);
         $data = Tools::getRequestContentBody($request);
-        $validator = new Validator($data, $model->getRequiredFieldsCreate());
+        $validator = new Validator($data);
+
+        $model->getRulesCreate($validator);
 
         if (!$validator->validate()){
-            $errors = $validator->getErrors();
+            $errors = $validator->errors();
         }
 
         if (empty($errors)){

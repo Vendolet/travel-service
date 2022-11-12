@@ -5,20 +5,25 @@ namespace app\model;
 class Traveler extends Model
 {
     /**
-     * Возвращает обязательные поля для создания записи
-     * @return array наименование столбцов таблицы
+     * Выполняет настройку валидации объекта библиотеки Valitron\Validator создания новой сущности
+     * @param Valitron\Validator $validator объект с данными валидации
      */
-    public function getRequiredFieldsCreate(): array
+    public function getRulesCreate($validator): void
     {
-        return ['name_traveler', 'phone', 'password'];
+        $validator->rule('required', 'phone');
+        $validator->rule('regex', 'phone', '/^[\d]{11}/i');
+        $validator->rule('regex', 'name_traveler', '/^[A-Za-zА-Яа-я]+$/iu');
+        $validator->rule('required', 'password');
     }
     /**
-     * Возвращает обязательные поля для авторизации
-     * @return array наименование столбцов таблицы
+     * Выполняет настройку валидации объекта библиотеки Valitron\Validator авторизации пользователя
+     * @param Valitron\Validator $validator объект с данными валидации
      */
-    public function getRequiredFieldsLogin(): array
+    public function getRulesLogin($validator): void
     {
-        return ['phone', 'password'];
+        $validator->rule('required', 'phone');
+        $validator->rule('regex', 'phone', '/^[\d]{11}/i');
+        $validator->rule('required', 'password');
     }
     /**
      * Получение всех записей (без телефонов)

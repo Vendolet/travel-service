@@ -11,9 +11,7 @@ class Place extends Model
     public function getAll(): array|null
     {
        $result = $this->db->query('SELECT p.*, c.name_city FROM `place` as p JOIN `city` as c ON p.city_id = c.id');
-       $data = $result->fetchAssocArray();
-
-       return $data;
+       return $result->fetchAssocArray();
     }
 
     /**
@@ -24,8 +22,6 @@ class Place extends Model
     public function getByID(int $id): array|null
     {
         $result = $this->db->query('SELECT p.*, c.name_city FROM `place` as p JOIN `city` as c ON p.city_id = c.id WHERE p.id =  ?i ', $id);
-        $data = $result->fetchAssoc();
-
-        return $data;
+        return $result->fetchAssoc();
     }
 }
