@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS `city` (
 CREATE TABLE IF NOT EXISTS `place` (
     `id` int NOT NULL AUTO_INCREMENT,
     `name_place` VARCHAR(255) NOT NULL,
-    `rank` TINYINT NOT NULL DEFAULT 0,
+    `rank` FLOAT(2,2) NOT NULL DEFAULT 0,
     `distance` FLOAT(4,2) NOT NULL,
     `city_id` INT NOT NULL,
     PRIMARY KEY (`id`),

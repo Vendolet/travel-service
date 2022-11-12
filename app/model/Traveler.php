@@ -12,6 +12,7 @@ class Traveler extends Model
     {
         $validator->rule('required', 'phone');
         $validator->rule('regex', 'phone', '/^[\d]{11}/i');
+        $validator->rule('required', 'name_traveler');
         $validator->rule('regex', 'name_traveler', '/^[A-Za-zА-Яа-я]+$/iu');
         $validator->rule('required', 'password');
     }
@@ -61,7 +62,7 @@ class Traveler extends Model
      * @param array $data именованный массив c данными 'name', 'phone', 'password'
      * @return array созданный пользователь
      */
-    public function create(array $data)
+    public function create(array $data): array
     {
         $this->db->query('INSERT INTO `traveler` SET ?A["?s", "?s", "?s"];', $data);
         $result = $this->db->query('SELECT `id`, `name_traveler`, `phone` FROM `traveler` WHERE `id` =  LAST_INSERT_ID()');
