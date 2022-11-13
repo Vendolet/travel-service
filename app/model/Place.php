@@ -26,6 +26,17 @@ class Place extends Model
                                             WHERE p.id =  ?i ", $id);
         return $result->fetchAssoc();
     }
+    /**
+     * Возвращает данные достопримечательностей нужного города
+     * @param int $id ID города
+     * @return array возвращает массив данных достопримечательностей
+     */
+    public function getPlaceOfCity(int $id): array
+    {
+        $result = $this->db->query("SELECT * FROM `place`
+                                        WHERE city_id =  ?i", $id);
+        return $result->fetchAssocArray();
+    }
 
     /**
      * Обновить поле рейтинга записи

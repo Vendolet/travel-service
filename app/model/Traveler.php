@@ -56,6 +56,19 @@ class Traveler extends Model
         $result = $this->db->query('SELECT `id`, `name_traveler`, `phone` FROM traveler WHERE `phone` = "?s"', $phone);
         return $result->fetchAssoc();
     }
+    /**
+     * Возвращает данные путешественников гостей города
+     * @param int $id ID города
+     * @return array возвращает массив данных путешественников,
+     */
+    public function getTravelerOfCity(int $id): array
+    {
+        $result = $this->db->query('SELECT `id`, `name_traveler` FROM traveler as t
+                                        JOIN `score` as s ON s.traveler_id = t.id
+                                        JOIN `place` as p ON p.id = s.place_id
+                                            WHERE p.city_id = ?i', $id);
+        return $result->fetchAssocArray();
+    }
 
     /**
      * Создать новую запись

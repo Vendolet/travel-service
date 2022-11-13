@@ -2,6 +2,7 @@
 
 use app\controller\PlaceController;
 use app\controller\TravelerController;
+use app\controller\CityController;
 use app\controller\ScoreController;
 use app\controller\AuthController;
 use Slim\Factory\AppFactory;
@@ -12,10 +13,14 @@ session_start();
 
 $app = AppFactory::create();
 
-$app->get('/', PlaceController::class . ':findAll'); // получить все достопримечательности
+$app->get('/place', PlaceController::class . ':findAll'); // получить все достопримечательности
+$app->post('/place', PlaceController::class . ':findAll'); // получить все достопримечательности по фильтру
 $app->get('/place/{id}', PlaceController::class . ':findOne'); // получить информацию об достопримечательности
-$app->post('/place/{id}', ScoreController::class . ':create'); // добавить оценку достопримечательности
 
+$app->get('/city', CityController::class . ':findAll'); // получить все города
+$app->get('/city/{id}', CityController::class . ':findOne'); // получить информацию о городе (гости города, достопримечательности)
+
+$app->post('/score', ScoreController::class . ':create'); // добавить оценку достопримечательности
 $app->put('/score', ScoreController::class . ':update'); // изменить оценку достопримечательности
 $app->delete('/score', ScoreController::class . ':delete'); // удалить оценку достопримечательности
 
