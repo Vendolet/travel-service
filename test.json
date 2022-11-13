@@ -1,0 +1,38 @@
+{
+  "Фильтр дост-ти: POST /place":
+    {
+      "city": [ 1, 3 ],
+      "rank": "min",
+      "distance": "max"
+    },
+
+  "Добавить оценку: POST /score":
+    {
+      "score": "7",
+      "place_id": "4"
+    },
+
+  "Изменить оценку: PUT /score/":
+    {
+      "id": "3",
+      "score": "10"
+    },
+
+  "Удалить оценку: DELETE /score":
+    {
+      "id": "5"
+    },
+
+  "Регистрация: POST /signup":
+    {
+      "name_traveler": "Leonid",
+      "phone": "89094444444",
+      "password": "Leonid"
+    },
+
+  "Авторизация: POST /login":
+    {
+      "phone": "89095555555",
+      "password": "Leonid"
+    }
+}

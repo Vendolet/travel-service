@@ -33,6 +33,7 @@ class Place extends Model
 
     /**
      * Получение всех записей по переданному фильтру, поддерживаемому моделью
+     * @param array $filter
      * @return array найденные записи
      */
     public function getFilterAll($filter): array
@@ -99,9 +100,10 @@ class Place extends Model
      * Обновить поле рейтинга записи
      * @param int $id ID достопримечательности
      */
-    public function updateRank(int $id){
+    public function updateRank(int $id):void
+    {
         $this->db->query("UPDATE `place`
-                            SET `rank` = (SELECT AVG(score) FROM `score` WHERE `place_id` = ?i)
+                            SET `rank` = IFNULL((SELECT AVG(score) FROM `score` WHERE `place_id` = ?i), 0)
                                 WHERE `id` = ?i", $id, $id);
     }
 }

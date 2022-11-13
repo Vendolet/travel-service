@@ -7,6 +7,8 @@ use app\tools\Tools;
 use Valitron\Validator;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Exception\HttpForbiddenException;
+use Slim\Exception\HttpUnauthorizedException;
 
 class AuthController extends Controller
 {
@@ -17,8 +19,8 @@ class AuthController extends Controller
     public function login(Request $request, Response $response): Response
     {
         if ($this->isAuth){
-            return $response->withStatus(403);
-            //TODO вынести проверку прав в другой обработчик
+            //TODO вынести проверку прав в другой обработчик (Middleware)
+            throw new HttpForbiddenException($request);
         }
 
         $errors = [];
@@ -41,10 +43,10 @@ class AuthController extends Controller
                     $_SESSION['user'] = $user;
                     return Tools::getResponseJSON($response, $user);
                 }else{
-                    $errors['password'] = 'Wrong password';
+                    $errors['password'] = ['Wrong password'];
                 }
             }else{
-                $errors['phone'] = 'This user is not exist';
+                $errors['phone'] = ['This user is not exist'];
             }
         }
 
@@ -59,8 +61,8 @@ class AuthController extends Controller
     public function signup(Request $request, Response $response): Response
     {
         if ($this->isAuth){
-            return $response->withStatus(403);
-            //TODO вынести проверку прав в другой обработчик
+            //TODO вынести проверку прав в другой обработчик (Middleware)
+            throw new HttpForbiddenException($request);
         }
 
         $errors = [];
@@ -84,7 +86,7 @@ class AuthController extends Controller
 
                 return Tools::getResponseJSON($response, $newUser);
             }else{
-                 $errors['travelerIsExist'] = true;
+                 $errors['phone'] = ['Traveler is exist'];
             }
         }
 
@@ -101,8 +103,9 @@ class AuthController extends Controller
         if ($this->isAuth){
             $_SESSION = [];
             return $response->withStatus(200);
-            //TODO вынести проверку прав в другой обработчик
+            //TODO вынести проверку прав в другой обработчик (Middleware)
         }
-        return $response->withStatus(401);
+        // return $response->withStatus(401);
+        throw new HttpUnauthorizedException($request);
     }
 }

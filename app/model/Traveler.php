@@ -11,7 +11,7 @@ class Traveler extends Model
     public function getRulesCreate($validator): void
     {
         $validator->rule('required', 'phone');
-        $validator->rule('regex', 'phone', '/^[\d]{11}/i');
+        $validator->rule('regex', 'phone', '/^[\d]{11}$/i');
         $validator->rule('required', 'name_traveler');
         $validator->rule('regex', 'name_traveler', '/^[A-Za-zА-Яа-я]+$/iu');
         $validator->rule('required', 'password');
@@ -23,7 +23,7 @@ class Traveler extends Model
     public function getRulesLogin($validator): void
     {
         $validator->rule('required', 'phone');
-        $validator->rule('regex', 'phone', '/^[\d]{11}/i');
+        $validator->rule('regex', 'phone', '/^[\d]{11}$/i');
         $validator->rule('required', 'password');
     }
     /**
@@ -63,7 +63,7 @@ class Traveler extends Model
      */
     public function getTravelerOfCity(int $id): array
     {
-        $result = $this->db->query('SELECT `id`, `name_traveler` FROM traveler as t
+        $result = $this->db->query('SELECT DISTINCT t.id, t.name_traveler FROM traveler as t
                                         JOIN `score` as s ON s.traveler_id = t.id
                                         JOIN `place` as p ON p.id = s.place_id
                                             WHERE p.city_id = ?i', $id);

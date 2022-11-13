@@ -56,7 +56,7 @@ class Score extends Model
      */
     public function getAll(): array|null
     {
-       $result = $this->db->query("SELECT `id`, `score`, `traveler_id`, `place_id`
+       $result = $this->db->query("SELECT s.id, `score`, `traveler_id`, `place_id`
                                       FROM score as s
                                         JOIN place as p ON p.id = s.place_id
                                         JOIN traveler as t ON t.id = s.traveler_id");

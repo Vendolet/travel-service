@@ -8,6 +8,7 @@ use app\model\Score;
 use app\tools\Tools;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Exception\HttpNotFoundException;
 use Slim\Routing\RouteContext;
 use Valitron\Validator;
 
@@ -32,7 +33,7 @@ class PlaceController extends Controller
                 return Tools::getResponseJSON($response, $validator->errors())->withStatus(400);
             }
 
-            //TODO внести проверку массива ниже в пользовательский валидатор модели
+            //TODO перенести проверку массива ниже в пользовательский валидатор модели
             if (!$this->validateFilterCityArray($filters['city'])){
                 return Tools::getResponseJSON($response, ['city' => 'Array contains not integer'])->withStatus(400);
             }
@@ -60,9 +61,15 @@ class PlaceController extends Controller
 
         $modelID = $route->getArgument('id');
         //TODO валидатор в middleware
+        if (!is_numeric($modelID)){
+            throw new HttpNotFoundException($request);
+        }
 
-        $scores = $modelScore->getByPlaceID($modelID);
         $place = $modelPlace->getByID($modelID);
+        if (!$place){
+            throw new HttpNotFoundException($request);
+        }
+        $scores = $modelScore->getByPlaceID($modelID);
 
         return Tools::getResponseJSON($response, ['scores' => $scores, 'place' => $place]);
     }

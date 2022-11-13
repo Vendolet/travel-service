@@ -2,11 +2,14 @@
 
 namespace app\controller;
 
+use app\model\City;
+use app\model\Score;
 use app\model\Traveler;
 use app\tools\Tools;
 use app\validator\Validator;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Exception\HttpNotFoundException;
 use Slim\Routing\RouteContext;
 
 class TravelerController extends Controller
@@ -29,14 +32,25 @@ class TravelerController extends Controller
      */
     public function findOne(Request $request, Response $response): Response
     {
-        $model = new Traveler($this->conn);
+        $modelTraveler = new Traveler($this->conn);
+        $modelCity = new City($this->conn);
+        $modelScore = new Score($this->conn);
 
         $route = RouteContext::fromRequest($request)->getRoute();
-        $modelID = $route->getArgument('id');
-        //TODO валидация данных
+        $travelerID = $route->getArgument('id');
 
-        $data = $model->getByID($modelID);
-        //TODO список посещенных городов и оценок достопримечательностей
+        if (!is_numeric($travelerID)){
+            throw new HttpNotFoundException($request);
+        }
+
+        $traveler = $modelTraveler->getByID($travelerID);
+        if (!$traveler){
+            throw new HttpNotFoundException($request);
+        }
+        $cities = $modelCity->getAllByTravelerID($travelerID);
+        $scores = $modelScore->getByTravelerID($travelerID);
+
+        $data = ['traveler' => $traveler, 'cities' => $cities, 'scores' => $scores];
         return Tools::getResponseJSON($response, $data);
     }
 }

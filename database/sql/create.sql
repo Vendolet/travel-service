@@ -10,14 +10,14 @@ CREATE TABLE IF NOT EXISTS `traveler` (
 
 CREATE TABLE IF NOT EXISTS `city` (
     `id` int NOT NULL AUTO_INCREMENT,
-    `name_city` VARCHAR(255) NOT NULL,
+    `name_city` VARCHAR(255) NOT NULL UNIQUE,
     PRIMARY KEY (`id`)
 );
 
 CREATE TABLE IF NOT EXISTS `place` (
     `id` int NOT NULL AUTO_INCREMENT,
     `name_place` VARCHAR(255) NOT NULL,
-    `rank` FLOAT(2,2) NOT NULL DEFAULT 0,
+    `rank` FLOAT(4,2) NOT NULL DEFAULT 0,
     `distance` FLOAT(4,2) NOT NULL,
     `city_id` INT NOT NULL,
     PRIMARY KEY (`id`),
