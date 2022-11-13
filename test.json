@@ -25,9 +25,9 @@
 
   "Регистрация: POST /signup":
     {
-      "name_traveler": "Leonid",
-      "phone": "89094444444",
-      "password": "Leonid"
+      "name_traveler": "August",
+      "phone": "89994444444",
+      "password": "August"
     },
 
   "Авторизация: POST /login":
