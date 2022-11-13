@@ -12,7 +12,7 @@ use Slim\Routing\RouteContext;
 class TravelerController extends Controller
 {
     /**
-     * Возвращает список путешественников по GET запросу
+     * Возвращает список путешественников по запросу
      * @return ResponseInterface
      */
     public function findAll(Request $request, Response $response): Response

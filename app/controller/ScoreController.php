@@ -13,7 +13,7 @@ use Slim\Routing\RouteContext;
 class ScoreController extends Controller
 {
     /**
-     * Возвращает список путешественников по GET запросу
+     * Возвращает список оценок по запросу
      * @return ResponseInterface
      */
     public function findAll(Request $request, Response $response): Response
